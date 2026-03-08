@@ -20,7 +20,7 @@
 
   html, body {
     width: 396px;
-    height: 670px;
+    height: 600px;
     overflow: hidden;
     background: transparent;
     font-family: 'DM Sans', sans-serif;
@@ -29,7 +29,7 @@
 
   .shell {
     width: 396px;
-    height: 670px;
+    height: 600px;
     display: flex;
     flex-direction: column;
     background: var(--bg);
@@ -214,13 +214,21 @@
 
   /* ACTION FOOTER */
   .action-footer {
-    flex: 0 0 64px;
+    flex: 0 0 0;
+    overflow: hidden;
     background: var(--white);
-    border-top: 1.5px solid var(--border);
+    border-top: 1.5px solid transparent;
     display: flex;
     align-items: center;
     padding: 0 16px;
     gap: 8px;
+    transition: flex-basis .22s cubic-bezier(.4,0,.2,1), border-color .22s, opacity .22s;
+    opacity: 0;
+  }
+  .action-footer.visible {
+    flex: 0 0 56px;
+    border-top-color: var(--border);
+    opacity: 1;
   }
 
   .sel-label {
@@ -258,7 +266,7 @@
   /* toast */
   .toast {
     position: fixed;
-    bottom: 72px;
+    bottom: 16px;
     left: 50%;
     transform: translateX(-50%) translateY(8px);
     background: var(--td);
@@ -438,6 +446,8 @@ function toggle(id, val) {
 function updateFooter() {
   const n = selected.size;
   document.getElementById('selN').textContent = n;
+  const footer = document.querySelector('.action-footer');
+  footer.classList.toggle('visible', n > 0);
   ['btnDeselect','btnSubmit','btnConfirm'].forEach(id => {
     document.getElementById(id).disabled = n === 0;
   });
