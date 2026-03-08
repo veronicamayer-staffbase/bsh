@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Supply Chain Management System</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #FFF0EC;
+    --accent: #FF6840;
+    --accent-light: #FFD5C8;
+    --white: #FFFFFF;
+    --text-dark: #1A1A1A;
+    --text-mid: #555555;
+    --text-light: #999999;
+    --border: #FFD5C8;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text-dark);
+    min-height: 100vh;
+    width: 700px;
+    margin: 0 auto;
+  }
+
+  /* ── HEADER ── */
+  header {
+    background: var(--accent);
+    padding: 0 20px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 700px;
+  }
+
+  header h1 {
+    color: #fff;
+    font-size: 15px;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+
+  .header-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: rgba(255,255,255,0.9);
+    font-size: 11.5px;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .dots-btn { display: flex; flex-direction: column; gap: 3px; cursor: pointer; }
+  .dots-btn span { width: 3px; height: 3px; background: #fff; border-radius: 50%; display: block; }
+
+  /* ── CONTENT ── */
+  .content {
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  /* ── FILTERS ── */
+  .filters {
+    display: flex;
+    gap: 14px;
+    align-items: flex-end;
+  }
+
+  .filter-group label {
+    display: block;
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--text-mid);
+    margin-bottom: 5px;
+  }
+
+  .filter-select, .filter-date {
+    background: var(--white);
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    padding: 7px 12px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    color: var(--text-dark);
+    outline: none;
+  }
+  .filter-select {
+    width: 130px;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 10 10'%3E%3Cpath fill='%23FF6840' d='M5 7L0 2h10z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    padding-right: 26px;
+  }
+  .filter-date { width: 200px; }
+
+  /* ── CARD BASE ── */
+  .card {
+    background: var(--white);
+    border-radius: 12px;
+    border: 1.5px solid var(--border);
+    box-shadow: 0 2px 10px rgba(255,104,64,0.06);
+  }
+
+  /* ── KPI CARD: 3 equal cols ── */
+  .kpi-card {
+    padding: 18px 16px;
+    display: grid;
+    grid-template-columns: 1fr 1px 1fr 1px 1fr;
+    gap: 0;
+    align-items: start;
+  }
+
+  .kpi-col { padding: 0 14px; }
+  .kpi-col:first-child { padding-left: 4px; }
+  .kpi-col:last-child  { padding-right: 4px; }
+
+  .divider-v {
+    width: 1px;
+    background: var(--border);
+    align-self: stretch;
+    margin: 4px 0;
+  }
+
+  .kpi-rate {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--accent);
+    font-family: 'DM Mono', monospace;
+    line-height: 1;
+  }
+
+  .kpi-rate-label {
+    font-size: 11px;
+    color: var(--text-mid);
+    margin-top: 3px;
+    margin-bottom: 10px;
+  }
+
+  .kpi-sub-row { display: flex; gap: 14px; }
+
+  .kpi-sub-val {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--text-dark);
+    font-family: 'DM Mono', monospace;
+    line-height: 1;
+  }
+  .kpi-sub-lbl {
+    font-size: 10px;
+    color: var(--text-light);
+    margin-top: 2px;
+    line-height: 1.3;
+  }
+
+  /* ── MIDDLE ROW: chart + donut ── */
+  .middle-row {
+    display: grid;
+    grid-template-columns: 1fr 190px;
+    gap: 14px;
+  }
+
+  /* ── CHART CARD ── */
+  .chart-card { padding: 16px 16px 12px; }
+
+  .chart-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 12px;
+    gap: 10px;
+  }
+
+  .chart-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-dark);
+    white-space: nowrap;
+  }
+
+  .chart-note {
+    font-size: 10.5px;
+    color: var(--text-mid);
+    text-align: right;
+    line-height: 1.45;
+    display: flex;
+    gap: 4px;
+    align-items: flex-start;
+  }
+  .info-icon { color: var(--accent); flex-shrink: 0; }
+
+  .chart-area {
+    display: flex;
+    align-items: flex-end;
+    height: 130px;
+  }
+
+  .chart-y-axis {
+    display: flex;
+    flex-direction: column-reverse;
+    justify-content: space-between;
+    height: 100%;
+    padding-bottom: 18px;
+    margin-right: 6px;
+    flex-shrink: 0;
+  }
+  .chart-y-axis span {
+    font-size: 9px;
+    color: var(--text-light);
+    font-family: 'DM Mono', monospace;
+    line-height: 1;
+  }
+
+  .chart-bars {
+    flex: 1;
+    display: flex;
+    align-items: flex-end;
+    height: 100%;
+    border-left: 1.5px solid var(--border);
+    border-bottom: 1.5px solid var(--border);
+    position: relative;
+  }
+
+  .chart-gridlines {
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: calc(100% - 18px);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    pointer-events: none;
+  }
+  .chart-gridlines div { width: 100%; height: 1px; background: rgba(255,104,64,0.08); }
+
+  .bar-group {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    height: 100%;
+    gap: 4px;
+  }
+
+  .bar {
+    width: 20px;
+    background: var(--accent);
+    border-radius: 3px 3px 0 0;
+    opacity: 0.85;
+    transition: opacity 0.15s;
+  }
+  .bar:hover { opacity: 1; }
+
+  .bar-label {
+    font-size: 8.5px;
+    color: var(--text-light);
+    text-align: center;
+    padding-bottom: 2px;
+    white-space: nowrap;
+  }
+
+  /* ── SHIPMENTS CARD ── */
+  .shipments-card {
+    padding: 16px 14px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .shipments-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-dark);
+    align-self: flex-start;
+    margin-bottom: 10px;
+  }
+
+  .donut-wrap {
+    position: relative;
+    width: 120px;
+    height: 120px;
+    margin-bottom: 14px;
+  }
+  .donut-wrap svg { transform: rotate(-90deg); }
+
+  .donut-center {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+  }
+  .donut-pct {
+    display: block;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text-dark);
+    font-family: 'DM Mono', monospace;
+    line-height: 1;
+  }
+  .donut-sub {
+    font-size: 9px;
+    color: var(--accent);
+    font-weight: 500;
+    line-height: 1.3;
+    display: block;
+    margin-top: 3px;
+  }
+
+  .ship-stats { width: 100%; display: flex; flex-direction: column; gap: 10px; }
+  .stat-divider { width: 100%; height: 1px; background: var(--border); }
+  .stat-lbl { font-size: 10.5px; color: var(--text-light); }
+  .stat-val {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--text-dark);
+    font-family: 'DM Mono', monospace;
+    line-height: 1.1;
+  }
+
+  /* ── TABLE ── */
+  .table-card { overflow: hidden; }
+
+  .table-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 13px 16px;
+    border-bottom: 1.5px solid var(--border);
+  }
+
+  .table-title { font-size: 13px; font-weight: 600; color: var(--accent); }
+
+  .pagination {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    color: var(--text-mid);
+  }
+
+  .page-btn {
+    width: 22px; height: 22px;
+    border: 1.5px solid var(--border);
+    border-radius: 5px;
+    background: var(--white);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    color: var(--accent);
+    font-weight: 600;
+  }
+  .page-btn:hover { background: var(--accent-light); }
+
+  .page-num {
+    border: 1.5px solid var(--accent);
+    border-radius: 5px;
+    width: 22px; height: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--accent);
+  }
+
+  table { width: 100%; border-collapse: collapse; }
+
+  thead th {
+    text-align: left;
+    padding: 8px 16px;
+    font-size: 11px;
+    color: var(--text-light);
+    font-weight: 500;
+    background: var(--bg);
+    border-bottom: 1.5px solid var(--border);
+    white-space: nowrap;
+  }
+
+  tbody tr { border-bottom: 1px solid #FFF0EC; transition: background 0.1s; }
+  tbody tr:last-child { border-bottom: none; }
+  tbody tr:hover { background: #FFF8F6; }
+
+  tbody td {
+    padding: 12px 16px;
+    font-size: 12.5px;
+    color: var(--text-dark);
+    white-space: nowrap;
+  }
+
+  .product-name { font-weight: 600; }
+
+  .units-cell {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 700;
+    font-family: 'DM Mono', monospace;
+  }
+
+  .arrow-up   { color: #2E7D32; font-size: 14px; }
+  .arrow-down { color: #E53935; font-size: 14px; }
+
+  .units-on-order {
+    font-family: 'DM Mono', monospace;
+    font-weight: 600;
+    color: var(--text-mid);
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <h1>Supply chain management system</h1>
+  <div class="header-right">
+    <span>Last updated : 26 June, 2023 10:58 AM</span>
+    <div class="dots-btn"><span></span><span></span><span></span></div>
+  </div>
+</header>
+
+<div class="content">
+
+  <!-- FILTERS -->
+  <div class="filters">
+    <div class="filter-group">
+      <label>Warehouse</label>
+      <select class="filter-select">
+        <option>All</option>
+        <option>Warehouse 1</option>
+        <option>Warehouse 2</option>
+        <option>Warehouse 3</option>
+      </select>
+    </div>
+    <div class="filter-group">
+      <label>Date</label>
+      <input type="text" class="filter-date" value="22 May 2023 - 22 June 2023" readonly>
+    </div>
+  </div>
+
+  <!-- KPI CARD -->
+  <div class="card kpi-card">
+    <div class="kpi-col">
+      <div class="kpi-rate">6.67%</div>
+      <div class="kpi-rate-label">Stockout Rate</div>
+      <div class="kpi-sub-row">
+        <div><div class="kpi-sub-val">1</div><div class="kpi-sub-lbl">Out of Stock</div></div>
+        <div><div class="kpi-sub-val">15</div><div class="kpi-sub-lbl">In Stock</div></div>
+      </div>
+    </div>
+    <div class="divider-v"></div>
+    <div class="kpi-col">
+      <div class="kpi-rate">2.17%</div>
+      <div class="kpi-rate-label">Return Rate</div>
+      <div class="kpi-sub-row">
+        <div><div class="kpi-sub-val">124</div><div class="kpi-sub-lbl">Returned Units</div></div>
+        <div><div class="kpi-sub-val">5,717</div><div class="kpi-sub-lbl">Ordered Units</div></div>
+      </div>
+    </div>
+    <div class="divider-v"></div>
+    <div class="kpi-col">
+      <div class="kpi-rate">1.11%</div>
+      <div class="kpi-rate-label">Backorder Rate</div>
+      <div class="kpi-sub-row">
+        <div><div class="kpi-sub-val">1</div><div class="kpi-sub-lbl">Backordered</div></div>
+        <div><div class="kpi-sub-val">15</div><div class="kpi-sub-lbl">Total Orders</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MIDDLE ROW -->
+  <div class="middle-row">
+
+    <!-- CHART -->
+    <div class="card chart-card">
+      <div class="chart-top">
+        <div class="chart-title">Inventory carrying cost</div>
+        <div class="chart-note">
+          <span class="info-icon">ⓘ</span>
+          <span>Includes Storage, Handling, Administrative, Damage and Loss costs.</span>
+        </div>
+      </div>
+      <div class="chart-area">
+        <div class="chart-y-axis">
+          <span>$1M</span>
+          <span>$800k</span>
+          <span>$600k</span>
+          <span>$400k</span>
+          <span>$200k</span>
+          <span>0</span>
+        </div>
+        <div class="chart-bars">
+          <div class="chart-gridlines">
+            <div></div><div></div><div></div><div></div><div></div>
+          </div>
+          <div class="bar-group"><div class="bar" style="height:42%"></div><div class="bar-label">WH 1</div></div>
+          <div class="bar-group"><div class="bar" style="height:28%"></div><div class="bar-label">WH 2</div></div>
+          <div class="bar-group"><div class="bar" style="height:48%"></div><div class="bar-label">WH 3</div></div>
+          <div class="bar-group"><div class="bar" style="height:62%"></div><div class="bar-label">WH 4</div></div>
+          <div class="bar-group"><div class="bar" style="height:80%"></div><div class="bar-label">WH 5</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SHIPMENTS -->
+    <div class="card shipments-card">
+      <div class="shipments-title">On Time Shipments</div>
+      <div class="donut-wrap">
+        <svg width="120" height="120" viewBox="0 0 120 120">
+          <circle cx="60" cy="60" r="46" fill="none" stroke="#FFD5C8" stroke-width="13"/>
+          <circle cx="60" cy="60" r="46" fill="none" stroke="#FF6840" stroke-width="13"
+            stroke-dasharray="289" stroke-dashoffset="35" stroke-linecap="round"/>
+        </svg>
+        <div class="donut-center">
+          <span class="donut-pct">87.66%</span>
+          <span class="donut-sub">Within Time<br>Limit</span>
+        </div>
+      </div>
+      <div class="ship-stats">
+        <div><div class="stat-lbl">Within Time Limit</div><div class="stat-val">985</div></div>
+        <div class="stat-divider"></div>
+        <div><div class="stat-lbl">Out of Time Limit</div><div class="stat-val">102</div></div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- TABLE -->
+  <div class="card table-card">
+    <div class="table-header">
+      <div class="table-title">Product Stock Details</div>
+      <div class="pagination">
+        <button class="page-btn">‹</button>
+        <span>Page</span>
+        <div class="page-num">1</div>
+        <span>of 22</span>
+        <button class="page-btn">›</button>
+      </div>
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>Product</th>
+          <th>Date</th>
+          <th>Units in Hand</th>
+          <th>Units On Order</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="product-name">Zenith Elite Watch</td>
+          <td>26/06/2023</td>
+          <td><div class="units-cell">56 <span class="arrow-up">↑</span></div></td>
+          <td class="units-on-order">40</td>
+        </tr>
+        <tr>
+          <td class="product-name">Bose Earbuds</td>
+          <td>26/06/2023</td>
+          <td><div class="units-cell">82 <span class="arrow-down">↓</span></div></td>
+          <td class="units-on-order">90</td>
+        </tr>
+        <tr>
+          <td class="product-name">KitchenAid Stand Mixer</td>
+          <td>26/06/2023</td>
+          <td><div class="units-cell">33 <span class="arrow-up">↑</span></div></td>
+          <td class="units-on-order">10</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+</div>
+</body>
+</html>
