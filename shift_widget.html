@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>BSH Shift Plan</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'DM Sans', sans-serif; background: #F4F4F4; min-height: 100vh; display: flex; justify-content: center; padding: 24px 16px; }
+    .widget { width: 100%; max-width: 420px; display: flex; flex-direction: column; gap: 12px; }
+    .card { background: #fff; border-radius: 20px; padding: 20px 24px; }
+    .header { background: #000; border-radius: 20px; padding: 24px 24px 20px; color: #fff; }
+    .header-top { display: flex; align-items: center; gap: 10px; margin-bottom: 4px; }
+    .bsh-badge { background: #FF6840; width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 11px; color: #fff; }
+    .header-title { font-weight: 800; font-size: 22px; letter-spacing: -0.5px; }
+    .header-cw { color: #FF6840; font-weight: 700; font-size: 15px; margin-bottom: 8px; }
+    .header-loc { display: flex; align-items: center; gap: 6px; color: #aaa; font-size: 13px; }
+    .stats { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+    .stat { text-align: center; }
+    .stat-value { color: #FF6840; font-weight: 800; font-size: 26px; letter-spacing: -1px; }
+    .stat-label { color: #888; font-size: 12px; font-weight: 500; margin-top: 2px; }
+    .week-nav { display: flex; align-items: center; justify-content: space-between; }
+    .nav-btn { background: #F4F4F4; border: none; border-radius: 10px; width: 36px; height: 36px; cursor: pointer; font-size: 14px; }
+    .week-title { font-weight: 700; font-size: 16px; text-align: center; }
+    .week-sub { color: #888; font-size: 12px; font-weight: 500; text-align: center; }
+    .days-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; }
+    .day-btn { background: #fff; border: none; border-radius: 14px; padding: 10px 0; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 4px; transition: all 0.15s ease; }
+    .day-btn.active { background: #FF6840; box-shadow: 0 4px 12px rgba(255,104,64,0.35); }
+    .day-label { font-size: 10px; font-weight: 700; color: #888; letter-spacing: 0.5px; }
+    .day-btn.active .day-label { color: rgba(255,255,255,0.8); }
+    .day-num { font-size: 17px; font-weight: 800; color: #000; }
+    .day-btn.active .day-num { color: #fff; }
+    .day-dot { width: 5px; height: 5px; border-radius: 50%; background: #ddd; }
+    .day-dot.has-shift { background: #FF6840; }
+    .day-btn.active .day-dot { background: rgba(255,255,255,0.7); }
+    .shift-card { background: #fff; border-radius: 20px; padding: 22px 24px; border-left: 4px solid #FF6840; display: flex; flex-direction: column; gap: 16px; }
+    .shift-badge { display: inline-block; background: #FFF0EC; color: #FF6840; font-weight: 700; font-size: 11px; letter-spacing: 1px; padding: 4px 10px; border-radius: 8px; margin-bottom: 12px; }
+    .shift-time { font-weight: 800; font-size: 30px; letter-spacing: -1px; }
+    .shift-hours { font-size: 15px; font-weight: 600; color: #888; }
+    .shift-meta { display: flex; flex-direction: column; gap: 8px; }
+    .shift-meta-row { display: flex; align-items: center; gap: 10px; font-size: 14px; color: #333; }
+    .shift-break { background: #F9F9F9; border-radius: 12px; padding: 10px 14px; display: flex; align-items: center; gap: 8px; font-size: 13px; color: #666; }
+    .team-label { font-size: 11px; font-weight: 700; color: #aaa; letter-spacing: 1px; margin-bottom: 10px; }
+    .team-list { display: flex; gap: 10px; flex-wrap: wrap; }
+    .team-member { display: flex; align-items: center; gap: 8px; background: #F4F4F4; border-radius: 50px; padding: 6px 14px 6px 6px; }
+    .avatar { width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 700; font-size: 11px; }
+    .member-name { font-size: 13px; font-weight: 600; color: #333; }
+    .day-off { background: #fff; border-radius: 20px; padding: 40px 24px; text-align: center; color: #bbb; font-weight: 600; font-size: 15px; border-left: 4px solid #eee; }
+  </style>
+</head>
+<body>
+<div class="widget">
+
+  <!-- Header -->
+  <div class="header">
+    <div class="header-top">
+      <div class="bsh-badge">BSH</div>
+      <span class="header-title">My Shift Plan</span>
+    </div>
+    <div class="header-cw">CW 7 / 2026</div>
+    <div class="header-loc">📍 BSH Plant Munich – Production Dept. B</div>
+  </div>
+
+  <!-- Stats -->
+  <div class="card stats">
+    <div class="stat"><div class="stat-value">38.5h</div><div class="stat-label">Weekly Hours</div></div>
+    <div class="stat"><div class="stat-value">5</div><div class="stat-label">Shifts</div></div>
+    <div class="stat"><div class="stat-value">2</div><div class="stat-label">Days Off</div></div>
+  </div>
+
+  <!-- Week nav -->
+  <div class="card week-nav">
+    <button class="nav-btn">◀</button>
+    <div>
+      <div class="week-title">Calendar Week 7</div>
+      <div class="week-sub">10 Feb – 15 Feb 2026</div>
+    </div>
+    <button class="nav-btn">▶</button>
+  </div>
+
+  <!-- Day selector -->
+  <div class="days-grid" id="days-grid"></div>
+
+  <!-- Shift detail -->
+  <div id="shift-detail"></div>
+
+</div>
+
+<script>
+  const shifts = {
+    MO: { day: "Monday", date: "9 Feb", type: "MORNING SHIFT", time: "06:00 - 14:30", hours: "8.5h", location: "Assembly Line B – Station 4", brk: "30 min. break (10:00 – 10:30)", team: [{ i: "AK", name: "A. Klein", color: "#FF6840" }, { i: "SR", name: "S. Richter", color: "#333" }, { i: "PM", name: "P. Müller", color: "#6B5CE7" }] },
+    TU: { day: "Tuesday", date: "10 Feb", type: "MORNING SHIFT", time: "06:00 - 14:30", hours: "8.5h", location: "Assembly Line B – Station 4", brk: "30 min. break (10:00 – 10:30)", team: [{ i: "AK", name: "A. Klein", color: "#FF6840" }, { i: "SR", name: "S. Richter", color: "#333" }, { i: "PM", name: "P. Müller", color: "#6B5CE7" }] },
+    WE: { day: "Wednesday", date: "11 Feb", type: "LATE SHIFT", time: "14:30 - 23:00", hours: "8.5h", location: "Assembly Line C – Station 2", brk: "30 min. break (18:00 – 18:30)", team: [{ i: "TW", name: "T. Wagner", color: "#2196F3" }, { i: "BH", name: "B. Hoffmann", color: "#4CAF50" }] },
+    TH: { day: "Thursday", date: "12 Feb", type: "MORNING SHIFT", time: "06:00 - 14:30", hours: "8.5h", location: "Assembly Line B – Station 4", brk: "30 min. break (10:00 – 10:30)", team: [{ i: "AK", name: "A. Klein", color: "#FF6840" }, { i: "LB", name: "L. Baumann", color: "#9C27B0" }] },
+    FR: { day: "Friday", date: "13 Feb", type: "MORNING SHIFT", time: "06:00 - 14:30", hours: "8h", location: "Assembly Line B – Station 4", brk: "30 min. break (10:00 – 10:30)", team: [{ i: "SR", name: "S. Richter", color: "#333" }, { i: "PM", name: "P. Müller", color: "#6B5CE7" }] },
+    SA: null,
+    SU: null
+  };
+
+  const days = ["MO", "TU", "WE", "TH", "FR", "SA", "SU"];
+  const dates = [9, 10, 11, 12, 13, 14, 15];
+  let selected = "TU";
+
+  function renderDays() {
+    const grid = document.getElementById("days-grid");
+    grid.innerHTML = days.map((day, i) => `
+      <button class="day-btn ${day === selected ? 'active' : ''}" onclick="selectDay('${day}')">
+        <span class="day-label">${day}</span>
+        <span class="day-num">${dates[i]}</span>
+        <div class="day-dot ${shifts[day] ? 'has-shift' : ''}"></div>
+      </button>
+    `).join("");
+  }
+
+  function renderShift() {
+    const detail = document.getElementById("shift-detail");
+    const s = shifts[selected];
+    if (!s) {
+      detail.innerHTML = `<div class="day-off">🏖️ Day Off</div>`;
+      return;
+    }
+    detail.innerHTML = `
+      <div class="shift-card">
+        <div>
+          <div class="shift-badge">${s.type}</div>
+          <div class="shift-time">${s.time} <span class="shift-hours">(${s.hours})</span></div>
+        </div>
+        <div class="shift-meta">
+          <div class="shift-meta-row">📅 <span><strong>${s.day}</strong>, ${s.date} 2026</span></div>
+          <div class="shift-meta-row">📍 <span>${s.location}</span></div>
+        </div>
+        <div class="shift-break">☕ ${s.brk}</div>
+        <div>
+          <div class="team-label">YOUR TEAM THIS SHIFT</div>
+          <div class="team-list">
+            ${s.team.map(m => `
+              <div class="team-member">
+                <div class="avatar" style="background:${m.color}">${m.i}</div>
+                <span class="member-name">${m.name}</span>
+              </div>
+            `).join("")}
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  function selectDay(day) {
+    selected = day;
+    renderDays();
+    renderShift();
+  }
+
+  renderDays();
+  renderShift();
+</script>
+</body>
+</html>
