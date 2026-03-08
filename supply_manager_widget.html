@@ -2,582 +2,601 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Supply Chain Management System</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #FFF0EC;
-    --accent: #FF6840;
-    --accent-light: #FFD5C8;
-    --white: #FFFFFF;
-    --text-dark: #1A1A1A;
-    --text-mid: #555555;
-    --text-light: #999999;
-    --border: #FFD5C8;
+    --accent:#FF6840; --al:#FFD5C8; --white:#FFFFFF;
+    --td:#1A1A1A; --tm:#555; --tl:#999; --border:#FFD5C8; --tbg:#FFF0EC;
   }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  html,body { width:858px; height:596px; overflow:hidden; background:transparent; font-family:'DM Sans',sans-serif; color:var(--td); }
 
-  * { box-sizing: border-box; margin: 0; padding: 0; }
+  .shell { width:858px; height:596px; display:flex; flex-direction:column; }
 
-  body {
-    font-family: 'DM Sans', sans-serif;
-    background: var(--bg);
-    color: var(--text-dark);
-    min-height: 100vh;
-    width: 700px;
-    margin: 0 auto;
+  /* HEADER */
+  header { flex:0 0 44px; background:var(--accent); padding:0 18px; display:flex; align-items:center; justify-content:space-between; }
+  header h1 { color:#fff; font-size:14px; font-weight:700; white-space:nowrap; }
+  .hdr-right { display:flex; align-items:center; gap:10px; color:rgba(255,255,255,.9); font-size:11px; white-space:nowrap; }
+  .dots { display:flex; flex-direction:column; gap:3px; cursor:pointer; }
+  .dots span { width:3px; height:3px; background:#fff; border-radius:50%; display:block; }
+
+  /* BODY */
+  .body { flex:1 1 0; display:grid; grid-template-columns:1fr 200px; grid-template-rows:1fr 148px; gap:10px; padding:10px; }
+
+  /* LEFT */
+  .left { display:flex; flex-direction:column; gap:9px; min-width:0; }
+
+  /* FILTERS */
+  .filters { display:flex; gap:12px; align-items:flex-end; flex-shrink:0; }
+  .fg label { display:block; font-size:10px; font-weight:500; color:var(--tm); margin-bottom:4px; }
+  .filter-select,.filter-date {
+    background:var(--white); border:1.5px solid var(--border); border-radius:7px;
+    padding:5px 10px; font-family:'DM Sans',sans-serif; font-size:11px; color:var(--td); outline:none;
+    cursor:pointer; transition:border-color .2s;
   }
-
-  /* ── HEADER ── */
-  header {
-    background: var(--accent);
-    padding: 0 20px;
-    height: 48px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    width: 700px;
-  }
-
-  header h1 {
-    color: #fff;
-    font-size: 15px;
-    font-weight: 700;
-    white-space: nowrap;
-  }
-
-  .header-right {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    color: rgba(255,255,255,0.9);
-    font-size: 11.5px;
-    white-space: nowrap;
-    flex-shrink: 0;
-  }
-
-  .dots-btn { display: flex; flex-direction: column; gap: 3px; cursor: pointer; }
-  .dots-btn span { width: 3px; height: 3px; background: #fff; border-radius: 50%; display: block; }
-
-  /* ── CONTENT ── */
-  .content {
-    padding: 16px;
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
-  }
-
-  /* ── FILTERS ── */
-  .filters {
-    display: flex;
-    gap: 14px;
-    align-items: flex-end;
-  }
-
-  .filter-group label {
-    display: block;
-    font-size: 11px;
-    font-weight: 500;
-    color: var(--text-mid);
-    margin-bottom: 5px;
-  }
-
-  .filter-select, .filter-date {
-    background: var(--white);
-    border: 1.5px solid var(--border);
-    border-radius: 8px;
-    padding: 7px 12px;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 12px;
-    color: var(--text-dark);
-    outline: none;
-  }
+  .filter-select:focus,.filter-date:focus { border-color:var(--accent); }
   .filter-select {
-    width: 130px;
-    appearance: none;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 10 10'%3E%3Cpath fill='%23FF6840' d='M5 7L0 2h10z'/%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: right 10px center;
-    padding-right: 26px;
+    width:130px; appearance:none;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='9' height='9' viewBox='0 0 9 9'%3E%3Cpath fill='%23FF6840' d='M4.5 6.5L0 2h9z'/%3E%3C/svg%3E");
+    background-repeat:no-repeat; background-position:right 9px center; padding-right:24px;
   }
-  .filter-date { width: 200px; }
+  .filter-date { width:185px; }
 
-  /* ── CARD BASE ── */
-  .card {
-    background: var(--white);
-    border-radius: 12px;
-    border: 1.5px solid var(--border);
-    box-shadow: 0 2px 10px rgba(255,104,64,0.06);
+  /* CARD */
+  .card { background:var(--white); border-radius:10px; border:1.5px solid var(--border); box-shadow:0 2px 8px rgba(255,104,64,.05); overflow:hidden; }
+
+  /* KPI CARD */
+  .kpi-card { flex:0 0 82px; display:grid; grid-template-columns:1fr 1px 1fr 1px 1fr; align-items:center; padding:0 12px; }
+  .kpi-col {
+    padding:10px 12px; cursor:pointer; border-radius:8px;
+    transition:background .15s;
   }
+  .kpi-col:first-child { padding-left:4px; }
+  .kpi-col:last-child  { padding-right:4px; }
+  .kpi-col:hover { background:rgba(255,104,64,.06); }
+  .kpi-col.active { background:rgba(255,104,64,.1); }
+  .dv { width:1px; background:var(--border); align-self:stretch; margin:10px 0; }
+  .kpi-rate { font-size:20px; font-weight:700; color:var(--accent); font-family:'DM Mono',monospace; line-height:1; }
+  .kpi-rlbl { font-size:10px; color:var(--tm); margin-top:2px; margin-bottom:7px; }
+  .kpi-srow { display:flex; gap:12px; }
+  .kpi-sv { font-size:13px; font-weight:700; color:var(--td); font-family:'DM Mono',monospace; line-height:1; }
+  .kpi-sl { font-size:9px; color:var(--tl); margin-top:2px; line-height:1.3; }
 
-  /* ── KPI CARD: 3 equal cols ── */
-  .kpi-card {
-    padding: 18px 16px;
-    display: grid;
-    grid-template-columns: 1fr 1px 1fr 1px 1fr;
-    gap: 0;
-    align-items: start;
+  /* CHART CARD */
+  .chart-card { flex:1 1 0; display:flex; flex-direction:column; padding:12px 14px 10px; min-height:0; }
+  .chart-top { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:8px; gap:8px; flex-shrink:0; }
+  .chart-title { font-size:12px; font-weight:600; color:var(--td); white-space:nowrap; }
+
+  /* chart tabs */
+  .chart-tabs { display:flex; gap:4px; }
+  .ctab {
+    font-size:9.5px; padding:3px 8px; border-radius:20px; cursor:pointer;
+    border:1.5px solid var(--border); color:var(--tm); background:transparent;
+    font-family:'DM Sans',sans-serif; transition:all .15s;
   }
+  .ctab:hover { border-color:var(--accent); color:var(--accent); }
+  .ctab.active { background:var(--accent); border-color:var(--accent); color:#fff; }
 
-  .kpi-col { padding: 0 14px; }
-  .kpi-col:first-child { padding-left: 4px; }
-  .kpi-col:last-child  { padding-right: 4px; }
+  .chart-note { font-size:9px; color:var(--tl); line-height:1.4; display:flex; gap:3px; align-items:flex-start; }
+  .ii { color:var(--accent); flex-shrink:0; font-size:10px; }
 
-  .divider-v {
-    width: 1px;
-    background: var(--border);
-    align-self: stretch;
-    margin: 4px 0;
-  }
+  .chart-area { display:flex; align-items:flex-end; flex:1 1 0; min-height:0; }
+  .cy { display:flex; flex-direction:column-reverse; justify-content:space-between; height:100%; padding-bottom:16px; margin-right:5px; flex-shrink:0; }
+  .cy span { font-size:8px; color:var(--tl); font-family:'DM Mono',monospace; line-height:1; }
 
-  .kpi-rate {
-    font-size: 22px;
-    font-weight: 700;
-    color: var(--accent);
-    font-family: 'DM Mono', monospace;
-    line-height: 1;
-  }
+  .chart-bars { flex:1; display:flex; align-items:flex-end; height:100%; border-left:1.5px solid var(--border); border-bottom:1.5px solid var(--border); position:relative; }
+  .cgl { position:absolute; top:0; left:0; right:0; height:calc(100% - 16px); display:flex; flex-direction:column; justify-content:space-between; pointer-events:none; }
+  .cgl div { width:100%; height:1px; background:rgba(255,104,64,.07); }
 
-  .kpi-rate-label {
-    font-size: 11px;
-    color: var(--text-mid);
-    margin-top: 3px;
-    margin-bottom: 10px;
-  }
-
-  .kpi-sub-row { display: flex; gap: 14px; }
-
-  .kpi-sub-val {
-    font-size: 15px;
-    font-weight: 700;
-    color: var(--text-dark);
-    font-family: 'DM Mono', monospace;
-    line-height: 1;
-  }
-  .kpi-sub-lbl {
-    font-size: 10px;
-    color: var(--text-light);
-    margin-top: 2px;
-    line-height: 1.3;
-  }
-
-  /* ── MIDDLE ROW: chart + donut ── */
-  .middle-row {
-    display: grid;
-    grid-template-columns: 1fr 190px;
-    gap: 14px;
-  }
-
-  /* ── CHART CARD ── */
-  .chart-card { padding: 16px 16px 12px; }
-
-  .chart-top {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 12px;
-    gap: 10px;
-  }
-
-  .chart-title {
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--text-dark);
-    white-space: nowrap;
-  }
-
-  .chart-note {
-    font-size: 10.5px;
-    color: var(--text-mid);
-    text-align: right;
-    line-height: 1.45;
-    display: flex;
-    gap: 4px;
-    align-items: flex-start;
-  }
-  .info-icon { color: var(--accent); flex-shrink: 0; }
-
-  .chart-area {
-    display: flex;
-    align-items: flex-end;
-    height: 130px;
-  }
-
-  .chart-y-axis {
-    display: flex;
-    flex-direction: column-reverse;
-    justify-content: space-between;
-    height: 100%;
-    padding-bottom: 18px;
-    margin-right: 6px;
-    flex-shrink: 0;
-  }
-  .chart-y-axis span {
-    font-size: 9px;
-    color: var(--text-light);
-    font-family: 'DM Mono', monospace;
-    line-height: 1;
-  }
-
-  .chart-bars {
-    flex: 1;
-    display: flex;
-    align-items: flex-end;
-    height: 100%;
-    border-left: 1.5px solid var(--border);
-    border-bottom: 1.5px solid var(--border);
-    position: relative;
-  }
-
-  .chart-gridlines {
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    height: calc(100% - 18px);
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    pointer-events: none;
-  }
-  .chart-gridlines div { width: 100%; height: 1px; background: rgba(255,104,64,0.08); }
-
-  .bar-group {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: flex-end;
-    height: 100%;
-    gap: 4px;
-  }
-
+  .bg { flex:1; display:flex; flex-direction:column; align-items:center; justify-content:flex-end; height:100%; gap:3px; cursor:pointer; }
   .bar {
-    width: 20px;
-    background: var(--accent);
-    border-radius: 3px 3px 0 0;
-    opacity: 0.85;
-    transition: opacity 0.15s;
+    width:16px; background:var(--accent); border-radius:3px 3px 0 0;
+    opacity:.75; transition:opacity .15s, height .4s cubic-bezier(.4,0,.2,1), width .15s;
   }
-  .bar:hover { opacity: 1; }
+  .bg:hover .bar { opacity:1; width:20px; }
+  .bg.selected .bar { opacity:1; width:20px; background:var(--accent); box-shadow:0 0 0 2px rgba(255,104,64,.3); }
+  .bl { font-size:8px; color:var(--tl); text-align:center; padding-bottom:2px; white-space:nowrap; transition:color .15s; }
+  .bg:hover .bl, .bg.selected .bl { color:var(--accent); font-weight:600; }
 
-  .bar-label {
-    font-size: 8.5px;
-    color: var(--text-light);
-    text-align: center;
-    padding-bottom: 2px;
-    white-space: nowrap;
+  /* bar tooltip */
+  .bar-tooltip {
+    position:absolute; background:var(--td); color:#fff; font-size:10px; font-family:'DM Mono',monospace;
+    padding:4px 8px; border-radius:5px; pointer-events:none; white-space:nowrap;
+    opacity:0; transition:opacity .15s; z-index:10; top:4px;
   }
+  .bar-tooltip::after { content:''; position:absolute; top:100%; left:50%; transform:translateX(-50%); border:4px solid transparent; border-top-color:var(--td); }
 
-  /* ── SHIPMENTS CARD ── */
-  .shipments-card {
-    padding: 16px 14px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
+  /* RIGHT */
+  .right { display:flex; flex-direction:column; }
+  .shipments-card { flex:1 1 0; display:flex; flex-direction:column; align-items:center; padding:12px 12px 10px; }
+  .s-title { font-size:12px; font-weight:600; color:var(--td); align-self:flex-start; margin-bottom:8px; }
 
-  .shipments-title {
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--text-dark);
-    align-self: flex-start;
-    margin-bottom: 10px;
-  }
+  .donut-wrap { position:relative; width:120px; height:120px; margin-bottom:10px; flex-shrink:0; cursor:pointer; }
+  .donut-wrap svg { transform:rotate(-90deg); }
+  .donut-arc { transition:stroke-dashoffset .5s cubic-bezier(.4,0,.2,1); }
+  .dc { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); text-align:center; pointer-events:none; }
+  .dpct { display:block; font-size:14px; font-weight:700; color:var(--td); font-family:'DM Mono',monospace; line-height:1; }
+  .dsub { font-size:8.5px; color:var(--accent); font-weight:500; line-height:1.3; display:block; margin-top:2px; }
 
-  .donut-wrap {
-    position: relative;
-    width: 120px;
-    height: 120px;
-    margin-bottom: 14px;
-  }
-  .donut-wrap svg { transform: rotate(-90deg); }
+  .ss { width:100%; display:flex; flex-direction:column; gap:7px; flex:1 1 0; justify-content:center; }
+  .sdiv { width:100%; height:1px; background:var(--border); }
+  .srow { cursor:pointer; border-radius:6px; padding:3px 4px; transition:background .15s; }
+  .srow:hover { background:rgba(255,104,64,.06); }
+  .slbl { font-size:10px; color:var(--tl); }
+  .sval { font-size:19px; font-weight:700; color:var(--td); font-family:'DM Mono',monospace; line-height:1.1; }
 
-  .donut-center {
-    position: absolute;
-    top: 50%; left: 50%;
-    transform: translate(-50%, -50%);
-    text-align: center;
-  }
-  .donut-pct {
-    display: block;
-    font-size: 16px;
-    font-weight: 700;
-    color: var(--text-dark);
-    font-family: 'DM Mono', monospace;
-    line-height: 1;
-  }
-  .donut-sub {
-    font-size: 9px;
-    color: var(--accent);
-    font-weight: 500;
-    line-height: 1.3;
-    display: block;
-    margin-top: 3px;
-  }
+  /* TABLE */
+  .table-wrap { grid-column:1/3; }
+  .table-card { height:100%; display:flex; flex-direction:column; }
+  .th-row { display:flex; justify-content:space-between; align-items:center; padding:7px 14px; border-bottom:1.5px solid var(--border); flex-shrink:0; }
+  .ttitle { font-size:12px; font-weight:600; color:var(--accent); }
+  .pag { display:flex; align-items:center; gap:5px; font-size:10px; color:var(--tm); }
+  .pb { width:20px; height:20px; border:1.5px solid var(--border); border-radius:4px; background:var(--white); cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:12px; color:var(--accent); font-weight:600; transition:background .12s; }
+  .pb:hover { background:var(--al); }
+  .pgnum { border:1.5px solid var(--accent); border-radius:4px; width:20px; height:20px; display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:600; color:var(--accent); }
 
-  .ship-stats { width: 100%; display: flex; flex-direction: column; gap: 10px; }
-  .stat-divider { width: 100%; height: 1px; background: var(--border); }
-  .stat-lbl { font-size: 10.5px; color: var(--text-light); }
-  .stat-val {
-    font-size: 22px;
-    font-weight: 700;
-    color: var(--text-dark);
-    font-family: 'DM Mono', monospace;
-    line-height: 1.1;
-  }
-
-  /* ── TABLE ── */
-  .table-card { overflow: hidden; }
-
-  .table-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 13px 16px;
-    border-bottom: 1.5px solid var(--border);
-  }
-
-  .table-title { font-size: 13px; font-weight: 600; color: var(--accent); }
-
-  .pagination {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 11px;
-    color: var(--text-mid);
-  }
-
-  .page-btn {
-    width: 22px; height: 22px;
-    border: 1.5px solid var(--border);
-    border-radius: 5px;
-    background: var(--white);
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 13px;
-    color: var(--accent);
-    font-weight: 600;
-  }
-  .page-btn:hover { background: var(--accent-light); }
-
-  .page-num {
-    border: 1.5px solid var(--accent);
-    border-radius: 5px;
-    width: 22px; height: 22px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 11px;
-    font-weight: 600;
-    color: var(--accent);
-  }
-
-  table { width: 100%; border-collapse: collapse; }
-
+  table { width:100%; border-collapse:collapse; }
   thead th {
-    text-align: left;
-    padding: 8px 16px;
-    font-size: 11px;
-    color: var(--text-light);
-    font-weight: 500;
-    background: var(--bg);
-    border-bottom: 1.5px solid var(--border);
-    white-space: nowrap;
+    text-align:left; padding:5px 14px; font-size:10px; color:var(--tl);
+    font-weight:500; background:var(--tbg); border-bottom:1.5px solid var(--border);
+    white-space:nowrap; cursor:pointer; user-select:none; transition:color .15s;
   }
+  thead th:hover { color:var(--accent); }
+  thead th .sort-arrow { margin-left:3px; opacity:.4; font-size:9px; }
+  thead th.sorted { color:var(--accent); }
+  thead th.sorted .sort-arrow { opacity:1; }
 
-  tbody tr { border-bottom: 1px solid #FFF0EC; transition: background 0.1s; }
-  tbody tr:last-child { border-bottom: none; }
-  tbody tr:hover { background: #FFF8F6; }
+  tbody tr { border-bottom:1px solid #FFF0EC; transition:background .1s; cursor:pointer; }
+  tbody tr:last-child { border-bottom:none; }
+  tbody tr:hover { background:#FFF8F6; }
+  tbody tr.selected-row { background:rgba(255,104,64,.07); }
+  tbody td { padding:8px 14px; font-size:11.5px; color:var(--td); white-space:nowrap; }
+  .pn2 { font-weight:600; }
+  .uc { display:flex; align-items:center; gap:7px; font-weight:700; font-family:'DM Mono',monospace; }
+  .au { color:#2E7D32; font-size:13px; }
+  .ad { color:#E53935; font-size:13px; }
+  .uo { font-family:'DM Mono',monospace; font-weight:600; color:var(--tm); }
 
-  tbody td {
-    padding: 12px 16px;
-    font-size: 12.5px;
-    color: var(--text-dark);
-    white-space: nowrap;
+  /* status badge */
+  .badge { display:inline-block; font-size:9px; padding:2px 6px; border-radius:10px; font-weight:600; }
+  .badge-ok  { background:#E8F5E9; color:#2E7D32; }
+  .badge-low { background:#FFF3E0; color:#E65100; }
+  .badge-crit{ background:#FFEBEE; color:#C62828; }
+
+  /* KPI detail panel */
+  .kpi-detail {
+    position:absolute; background:var(--white); border:1.5px solid var(--border);
+    border-radius:10px; box-shadow:0 8px 24px rgba(255,104,64,.15);
+    padding:12px 14px; font-size:11px; z-index:20; min-width:160px;
+    animation:fadein .15s;
   }
-
-  .product-name { font-weight: 600; }
-
-  .units-cell {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-weight: 700;
-    font-family: 'DM Mono', monospace;
-  }
-
-  .arrow-up   { color: #2E7D32; font-size: 14px; }
-  .arrow-down { color: #E53935; font-size: 14px; }
-
-  .units-on-order {
-    font-family: 'DM Mono', monospace;
-    font-weight: 600;
-    color: var(--text-mid);
-  }
+  @keyframes fadein { from{opacity:0;transform:translateY(-4px)} to{opacity:1;transform:translateY(0)} }
+  .kpi-detail h4 { font-size:11px; font-weight:600; color:var(--accent); margin-bottom:8px; }
+  .kpi-detail-row { display:flex; justify-content:space-between; gap:16px; margin-bottom:5px; }
+  .kpi-detail-row:last-child { margin-bottom:0; }
+  .kd-lbl { color:var(--tl); font-size:10px; }
+  .kd-val { font-weight:600; font-family:'DM Mono',monospace; font-size:11px; }
 </style>
 </head>
 <body>
-
-<!-- HEADER -->
-<header>
-  <h1>Supply chain management system</h1>
-  <div class="header-right">
-    <span>Last updated : 26 June, 2023 10:58 AM</span>
-    <div class="dots-btn"><span></span><span></span><span></span></div>
-  </div>
-</header>
-
-<div class="content">
-
-  <!-- FILTERS -->
-  <div class="filters">
-    <div class="filter-group">
-      <label>Warehouse</label>
-      <select class="filter-select">
-        <option>All</option>
-        <option>Warehouse 1</option>
-        <option>Warehouse 2</option>
-        <option>Warehouse 3</option>
-      </select>
+<div class="shell">
+  <header>
+    <h1>Supply chain management system</h1>
+    <div class="hdr-right">
+      <span id="lastUpdated">Last updated : 26 June, 2023 10:58 AM</span>
+      <div class="dots" title="Options"><span></span><span></span><span></span></div>
     </div>
-    <div class="filter-group">
-      <label>Date</label>
-      <input type="text" class="filter-date" value="22 May 2023 - 22 June 2023" readonly>
-    </div>
-  </div>
+  </header>
 
-  <!-- KPI CARD -->
-  <div class="card kpi-card">
-    <div class="kpi-col">
-      <div class="kpi-rate">6.67%</div>
-      <div class="kpi-rate-label">Stockout Rate</div>
-      <div class="kpi-sub-row">
-        <div><div class="kpi-sub-val">1</div><div class="kpi-sub-lbl">Out of Stock</div></div>
-        <div><div class="kpi-sub-val">15</div><div class="kpi-sub-lbl">In Stock</div></div>
-      </div>
-    </div>
-    <div class="divider-v"></div>
-    <div class="kpi-col">
-      <div class="kpi-rate">2.17%</div>
-      <div class="kpi-rate-label">Return Rate</div>
-      <div class="kpi-sub-row">
-        <div><div class="kpi-sub-val">124</div><div class="kpi-sub-lbl">Returned Units</div></div>
-        <div><div class="kpi-sub-val">5,717</div><div class="kpi-sub-lbl">Ordered Units</div></div>
-      </div>
-    </div>
-    <div class="divider-v"></div>
-    <div class="kpi-col">
-      <div class="kpi-rate">1.11%</div>
-      <div class="kpi-rate-label">Backorder Rate</div>
-      <div class="kpi-sub-row">
-        <div><div class="kpi-sub-val">1</div><div class="kpi-sub-lbl">Backordered</div></div>
-        <div><div class="kpi-sub-val">15</div><div class="kpi-sub-lbl">Total Orders</div></div>
-      </div>
-    </div>
-  </div>
+  <div class="body" style="grid-template-rows:1fr 148px;">
 
-  <!-- MIDDLE ROW -->
-  <div class="middle-row">
+    <!-- LEFT -->
+    <div class="left">
 
-    <!-- CHART -->
-    <div class="card chart-card">
-      <div class="chart-top">
-        <div class="chart-title">Inventory carrying cost</div>
-        <div class="chart-note">
-          <span class="info-icon">ⓘ</span>
-          <span>Includes Storage, Handling, Administrative, Damage and Loss costs.</span>
+      <div class="filters">
+        <div class="fg">
+          <label>Warehouse</label>
+          <select class="filter-select" id="whFilter">
+            <option value="all">All</option>
+            <option value="0">Warehouse 1</option>
+            <option value="1">Warehouse 2</option>
+            <option value="2">Warehouse 3</option>
+            <option value="3">Warehouse 4</option>
+            <option value="4">Warehouse 5</option>
+            <option value="5">Warehouse 6</option>
+            <option value="6">Warehouse 7</option>
+          </select>
+        </div>
+        <div class="fg">
+          <label>Date Range</label>
+          <select class="filter-select" id="dateFilter" style="width:185px">
+            <option>22 May 2023 – 22 Jun 2023</option>
+            <option>01 Apr 2023 – 30 Apr 2023</option>
+            <option>01 Mar 2023 – 31 Mar 2023</option>
+            <option>01 Jan 2023 – 28 Feb 2023</option>
+          </select>
         </div>
       </div>
-      <div class="chart-area">
-        <div class="chart-y-axis">
-          <span>$1M</span>
-          <span>$800k</span>
-          <span>$600k</span>
-          <span>$400k</span>
-          <span>$200k</span>
-          <span>0</span>
-        </div>
-        <div class="chart-bars">
-          <div class="chart-gridlines">
-            <div></div><div></div><div></div><div></div><div></div>
+
+      <!-- KPI (relative for panel) -->
+      <div style="position:relative">
+        <div class="card kpi-card" id="kpiCard">
+          <div class="kpi-col" data-kpi="stockout">
+            <div class="kpi-rate" id="kr0">6.67%</div>
+            <div class="kpi-rlbl">Stockout Rate</div>
+            <div class="kpi-srow">
+              <div><div class="kpi-sv" id="ks0a">1</div><div class="kpi-sl">Out of Stock</div></div>
+              <div><div class="kpi-sv" id="ks0b">15</div><div class="kpi-sl">In Stock</div></div>
+            </div>
           </div>
-          <div class="bar-group"><div class="bar" style="height:42%"></div><div class="bar-label">WH 1</div></div>
-          <div class="bar-group"><div class="bar" style="height:28%"></div><div class="bar-label">WH 2</div></div>
-          <div class="bar-group"><div class="bar" style="height:48%"></div><div class="bar-label">WH 3</div></div>
-          <div class="bar-group"><div class="bar" style="height:62%"></div><div class="bar-label">WH 4</div></div>
-          <div class="bar-group"><div class="bar" style="height:80%"></div><div class="bar-label">WH 5</div></div>
+          <div class="dv"></div>
+          <div class="kpi-col" data-kpi="return">
+            <div class="kpi-rate" id="kr1">2.17%</div>
+            <div class="kpi-rlbl">Return Rate</div>
+            <div class="kpi-srow">
+              <div><div class="kpi-sv" id="ks1a">124</div><div class="kpi-sl">Returned</div></div>
+              <div><div class="kpi-sv" id="ks1b">5,717</div><div class="kpi-sl">Ordered</div></div>
+            </div>
+          </div>
+          <div class="dv"></div>
+          <div class="kpi-col" data-kpi="backorder">
+            <div class="kpi-rate" id="kr2">1.11%</div>
+            <div class="kpi-rlbl">Backorder Rate</div>
+            <div class="kpi-srow">
+              <div><div class="kpi-sv" id="ks2a">1</div><div class="kpi-sl">Backordered</div></div>
+              <div><div class="kpi-sv" id="ks2b">15</div><div class="kpi-sl">Total Orders</div></div>
+            </div>
+          </div>
+        </div>
+        <div id="kpiPanel" class="kpi-detail" style="display:none;top:90px;left:0"></div>
+      </div>
+
+      <!-- CHART -->
+      <div class="card chart-card">
+        <div class="chart-top">
+          <div class="chart-title">Inventory carrying cost</div>
+          <div style="display:flex;align-items:center;gap:8px;">
+            <div class="chart-tabs">
+              <button class="ctab active" data-metric="carrying">Carrying</button>
+              <button class="ctab" data-metric="storage">Storage</button>
+              <button class="ctab" data-metric="damage">Damage</button>
+            </div>
+            <div class="chart-note"><span class="ii">ⓘ</span><span>Storage, Handling,<br>Admin, Damage & Loss</span></div>
+          </div>
+        </div>
+        <div class="chart-area">
+          <div class="cy">
+            <span id="yMax">$1M</span><span>$800k</span><span>$600k</span><span>$400k</span><span>$200k</span><span>0</span>
+          </div>
+          <div class="chart-bars" id="chartBars">
+            <div class="cgl"><div></div><div></div><div></div><div></div><div></div></div>
+            <div id="barTooltip" class="bar-tooltip"></div>
+            <!-- bars injected by JS -->
+          </div>
         </div>
       </div>
     </div>
 
-    <!-- SHIPMENTS -->
-    <div class="card shipments-card">
-      <div class="shipments-title">On Time Shipments</div>
-      <div class="donut-wrap">
-        <svg width="120" height="120" viewBox="0 0 120 120">
-          <circle cx="60" cy="60" r="46" fill="none" stroke="#FFD5C8" stroke-width="13"/>
-          <circle cx="60" cy="60" r="46" fill="none" stroke="#FF6840" stroke-width="13"
-            stroke-dasharray="289" stroke-dashoffset="35" stroke-linecap="round"/>
-        </svg>
-        <div class="donut-center">
-          <span class="donut-pct">87.66%</span>
-          <span class="donut-sub">Within Time<br>Limit</span>
+    <!-- RIGHT -->
+    <div class="right">
+      <div class="card shipments-card">
+        <div class="s-title">On Time Shipments</div>
+        <div class="donut-wrap" id="donutWrap" title="Click to toggle view">
+          <svg width="120" height="120" viewBox="0 0 120 120">
+            <circle cx="60" cy="60" r="46" fill="none" stroke="#FFD5C8" stroke-width="13"/>
+            <circle id="donutArc" class="donut-arc" cx="60" cy="60" r="46" fill="none" stroke="#FF6840" stroke-width="13"
+              stroke-dasharray="289" stroke-dashoffset="35" stroke-linecap="round"/>
+          </svg>
+          <div class="dc">
+            <span class="dpct" id="donutPct">87.66%</span>
+            <span class="dsub" id="donutLbl">Within Time<br>Limit</span>
+          </div>
+        </div>
+        <div class="ss">
+          <div class="srow" id="srow0" title="Click to highlight">
+            <div class="slbl">Within Time Limit</div>
+            <div class="sval" id="sv0">985</div>
+          </div>
+          <div class="sdiv"></div>
+          <div class="srow" id="srow1" title="Click to highlight">
+            <div class="slbl">Out of Time Limit</div>
+            <div class="sval" id="sv1">102</div>
+          </div>
         </div>
       </div>
-      <div class="ship-stats">
-        <div><div class="stat-lbl">Within Time Limit</div><div class="stat-val">985</div></div>
-        <div class="stat-divider"></div>
-        <div><div class="stat-lbl">Out of Time Limit</div><div class="stat-val">102</div></div>
+    </div>
+
+    <!-- TABLE -->
+    <div class="table-wrap">
+      <div class="card table-card">
+        <div class="th-row">
+          <div class="ttitle">Product Stock Details</div>
+          <div class="pag">
+            <button class="pb" id="prevPage">‹</button>
+            <span>Page</span>
+            <div class="pgnum" id="pageNum">1</div>
+            <span id="pageTotal">of 4</span>
+            <button class="pb" id="nextPage">›</button>
+          </div>
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th data-col="name">Product <span class="sort-arrow">↕</span></th>
+              <th data-col="date">Date <span class="sort-arrow">↕</span></th>
+              <th data-col="units">Units in Hand <span class="sort-arrow">↕</span></th>
+              <th data-col="order">Units On Order <span class="sort-arrow">↕</span></th>
+              <th data-col="status">Status <span class="sort-arrow">↕</span></th>
+            </tr>
+          </thead>
+          <tbody id="tableBody"></tbody>
+        </table>
       </div>
     </div>
 
   </div>
-
-  <!-- TABLE -->
-  <div class="card table-card">
-    <div class="table-header">
-      <div class="table-title">Product Stock Details</div>
-      <div class="pagination">
-        <button class="page-btn">‹</button>
-        <span>Page</span>
-        <div class="page-num">1</div>
-        <span>of 22</span>
-        <button class="page-btn">›</button>
-      </div>
-    </div>
-    <table>
-      <thead>
-        <tr>
-          <th>Product</th>
-          <th>Date</th>
-          <th>Units in Hand</th>
-          <th>Units On Order</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td class="product-name">Zenith Elite Watch</td>
-          <td>26/06/2023</td>
-          <td><div class="units-cell">56 <span class="arrow-up">↑</span></div></td>
-          <td class="units-on-order">40</td>
-        </tr>
-        <tr>
-          <td class="product-name">Bose Earbuds</td>
-          <td>26/06/2023</td>
-          <td><div class="units-cell">82 <span class="arrow-down">↓</span></div></td>
-          <td class="units-on-order">90</td>
-        </tr>
-        <tr>
-          <td class="product-name">KitchenAid Stand Mixer</td>
-          <td>26/06/2023</td>
-          <td><div class="units-cell">33 <span class="arrow-up">↑</span></div></td>
-          <td class="units-on-order">10</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-
 </div>
+
+<script>
+// ── DATA ─────────────────────────────────────────────────────
+const warehouseData = {
+  all:   { carrying:[42,28,48,62,80,55,38,70,45,90,33,61,74,52,66], storage:[30,20,36,50,68,42,30,58,35,78,25,50,62,40,54], damage:[12,8,15,20,26,16,10,22,13,30,9,18,23,15,20] },
+  0:     { carrying:[42,35,50,28,60,45,38,55], storage:[30,25,40,20,48,35,28,44], damage:[12,10,16,8,20,14,11,17] },
+  1:     { carrying:[28,40,32,55,45,60,38,22], storage:[20,30,24,42,35,48,28,16], damage:[8,12,9,18,14,20,11,7] },
+  2:     { carrying:[48,55,62,70,40,35,58,65], storage:[36,42,50,58,30,26,44,52], damage:[15,17,20,24,12,10,18,21] },
+  3:     { carrying:[62,70,55,48,80,65,72,58], storage:[50,58,42,36,68,52,60,44], damage:[20,24,17,15,28,22,25,18] },
+  4:     { carrying:[80,72,65,90,58,75,85,68], storage:[68,60,52,78,44,62,72,55], damage:[26,24,20,30,18,25,28,22] },
+  5:     { carrying:[55,48,60,45,70,38,52,65], storage:[42,36,48,34,58,28,40,52], damage:[16,15,19,13,24,12,17,21] },
+  6:     { carrying:[38,45,52,60,35,70,42,55], storage:[28,34,40,48,26,58,32,44], damage:[11,14,16,20,10,24,13,18] },
+};
+
+const allProducts = [
+  { name:"Zenith Elite Watch",       date:"26/06/2023", units:56,  order:40,  trend:1,  status:"ok"   },
+  { name:"Bose Earbuds",             date:"26/06/2023", units:82,  order:90,  trend:-1, status:"ok"   },
+  { name:"KitchenAid Stand Mixer",   date:"25/06/2023", units:33,  order:10,  trend:1,  status:"low"  },
+  { name:"Sony WH-1000XM5",          date:"25/06/2023", units:14,  order:60,  trend:-1, status:"crit" },
+  { name:"Dyson V15 Vacuum",         date:"24/06/2023", units:27,  order:30,  trend:1,  status:"low"  },
+  { name:"Apple Watch Series 9",     date:"24/06/2023", units:105, order:120, trend:1,  status:"ok"   },
+  { name:"Samsung Galaxy Tab S9",    date:"23/06/2023", units:48,  order:55,  trend:-1, status:"ok"   },
+  { name:"Nespresso Vertuo Next",    date:"23/06/2023", units:9,   order:40,  trend:1,  status:"crit" },
+  { name:"Philips Hue Starter Kit",  date:"22/06/2023", units:71,  order:80,  trend:1,  status:"ok"   },
+  { name:"iRobot Roomba j9+",        date:"22/06/2023", units:19,  order:25,  trend:-1, status:"low"  },
+  { name:"Garmin Fenix 7",           date:"21/06/2023", units:44,  order:50,  trend:1,  status:"ok"   },
+  { name:"Instant Pot Duo 7-in-1",   date:"21/06/2023", units:7,   order:35,  trend:1,  status:"crit" },
+];
+
+const kpiDetails = {
+  stockout: { title:"Stockout Analysis", rows:[["Avg days OOS","4.2d"],["SKUs affected","1"],["Revenue at risk","$8,400"],["Last incident","14 Jun"]] },
+  return:   { title:"Return Analysis",   rows:[["Top reason","Defective (38%)"],["Avg return window","12d"],["Restocked","89 units"],["Pending","35 units"]] },
+  backorder:{ title:"Backorder Analysis",rows:[["Avg wait time","6.5d"],["Est. fulfillment","29 Jun"],["On expedite","1 order"],["Next arrival","27 Jun"]] },
+};
+
+// ── STATE ─────────────────────────────────────────────────────
+let currentMetric = 'carrying';
+let currentWH = 'all';
+let selectedBar = null;
+let selectedRow = null;
+let sortCol = null, sortDir = 1;
+let currentPage = 1;
+const ROWS_PER_PAGE = 3;
+let donutMode = 0; // 0=on-time, 1=late, toggle
+let activeKpi = null;
+
+// ── CHART ─────────────────────────────────────────────────────
+function buildChart() {
+  const bars = document.getElementById('chartBars');
+  const tooltip = document.getElementById('barTooltip');
+  // remove old bar groups (keep gridlines + tooltip)
+  bars.querySelectorAll('.bg').forEach(el => el.remove());
+
+  const data = warehouseData[currentWH][currentMetric];
+  const max = Math.max(...data);
+
+  data.forEach((val, i) => {
+    const pct = (val / max) * 88;
+    const label = currentWH === 'all' ? `WH ${i+1}` : `W${i+1}`;
+    const displayVal = currentMetric === 'carrying'
+      ? `$${(val * 10).toLocaleString()}k`
+      : `$${(val * 6).toLocaleString()}k`;
+
+    const g = document.createElement('div');
+    g.className = 'bg';
+    if (selectedBar === i) g.classList.add('selected');
+
+    const b = document.createElement('div');
+    b.className = 'bar';
+    b.style.height = '0%';
+    setTimeout(() => b.style.height = pct + '%', 30 + i * 40);
+
+    const bl = document.createElement('div');
+    bl.className = 'bl';
+    bl.textContent = label;
+
+    g.appendChild(b);
+    g.appendChild(bl);
+
+    g.addEventListener('mouseenter', (e) => {
+      tooltip.textContent = displayVal;
+      tooltip.style.opacity = '1';
+      const barsRect = bars.getBoundingClientRect();
+      const gRect = g.getBoundingClientRect();
+      tooltip.style.left = (gRect.left - barsRect.left + gRect.width/2 - tooltip.offsetWidth/2) + 'px';
+    });
+    g.addEventListener('mouseleave', () => { tooltip.style.opacity = '0'; });
+
+    g.addEventListener('click', () => {
+      selectedBar = (selectedBar === i) ? null : i;
+      buildChart();
+    });
+
+    bars.appendChild(g);
+  });
+}
+
+// ── CHART TABS ────────────────────────────────────────────────
+document.querySelectorAll('.ctab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.ctab').forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+    currentMetric = tab.dataset.metric;
+    selectedBar = null;
+    buildChart();
+  });
+});
+
+// ── WAREHOUSE FILTER ──────────────────────────────────────────
+document.getElementById('whFilter').addEventListener('change', (e) => {
+  currentWH = e.target.value;
+  selectedBar = null;
+  buildChart();
+  renderTable();
+});
+
+// ── KPI PANELS ────────────────────────────────────────────────
+const kpiPanel = document.getElementById('kpiPanel');
+document.querySelectorAll('.kpi-col').forEach(col => {
+  col.addEventListener('click', (e) => {
+    const key = col.dataset.kpi;
+    if (activeKpi === key) {
+      activeKpi = null;
+      kpiPanel.style.display = 'none';
+      col.classList.remove('active');
+      document.querySelectorAll('.kpi-col').forEach(c => c.classList.remove('active'));
+      return;
+    }
+    activeKpi = key;
+    document.querySelectorAll('.kpi-col').forEach(c => c.classList.remove('active'));
+    col.classList.add('active');
+    const d = kpiDetails[key];
+    let html = `<h4>${d.title}</h4>`;
+    d.rows.forEach(([l,v]) => {
+      html += `<div class="kpi-detail-row"><span class="kd-lbl">${l}</span><span class="kd-val">${v}</span></div>`;
+    });
+    kpiPanel.innerHTML = html;
+    // position under clicked col
+    const colRect = col.getBoundingClientRect();
+    const cardRect = document.getElementById('kpiCard').parentElement.getBoundingClientRect();
+    kpiPanel.style.left = (colRect.left - cardRect.left) + 'px';
+    kpiPanel.style.display = 'block';
+  });
+});
+document.addEventListener('click', (e) => {
+  if (!e.target.closest('.kpi-col') && !e.target.closest('#kpiPanel')) {
+    kpiPanel.style.display = 'none';
+    activeKpi = null;
+    document.querySelectorAll('.kpi-col').forEach(c => c.classList.remove('active'));
+  }
+});
+
+// ── DONUT TOGGLE ──────────────────────────────────────────────
+const donutStates = [
+  { pct:'87.66%', lbl:'Within Time\nLimit', offset:35, color:'#FF6840' },
+  { pct:'12.34%', lbl:'Out of Time\nLimit',  offset:252, color:'#FFD5C8' },
+];
+document.getElementById('donutWrap').addEventListener('click', () => {
+  donutMode = (donutMode + 1) % 2;
+  const s = donutStates[donutMode];
+  document.getElementById('donutPct').textContent = s.pct;
+  document.getElementById('donutLbl').innerHTML = s.lbl.replace('\n','<br>');
+  document.getElementById('donutArc').style.strokeDashoffset = s.offset;
+  document.getElementById('donutArc').style.stroke = s.color;
+  document.getElementById('srow0').style.background = donutMode === 0 ? 'rgba(255,104,64,.07)' : '';
+  document.getElementById('srow1').style.background = donutMode === 1 ? 'rgba(255,104,64,.07)' : '';
+});
+['srow0','srow1'].forEach((id, i) => {
+  document.getElementById(id).addEventListener('click', () => {
+    if (donutMode !== i) {
+      donutMode = i;
+      const s = donutStates[i];
+      document.getElementById('donutPct').textContent = s.pct;
+      document.getElementById('donutLbl').innerHTML = s.lbl.replace('\n','<br>');
+      document.getElementById('donutArc').style.strokeDashoffset = s.offset;
+      document.getElementById('donutArc').style.stroke = s.color;
+    }
+    document.getElementById('srow0').style.background = i === 0 ? 'rgba(255,104,64,.07)' : '';
+    document.getElementById('srow1').style.background = i === 1 ? 'rgba(255,104,64,.07)' : '';
+  });
+});
+
+// ── TABLE ─────────────────────────────────────────────────────
+let tableData = [...allProducts];
+
+function getSorted(data) {
+  if (!sortCol) return data;
+  return [...data].sort((a, b) => {
+    let va, vb;
+    if (sortCol === 'name')   { va = a.name;   vb = b.name; }
+    if (sortCol === 'date')   { va = a.date;   vb = b.date; }
+    if (sortCol === 'units')  { va = a.units;  vb = b.units; }
+    if (sortCol === 'order')  { va = a.order;  vb = b.order; }
+    if (sortCol === 'status') { va = a.status; vb = b.status; }
+    return va < vb ? -sortDir : va > vb ? sortDir : 0;
+  });
+}
+
+function renderTable() {
+  const sorted = getSorted(tableData);
+  const total = Math.ceil(sorted.length / ROWS_PER_PAGE);
+  if (currentPage > total) currentPage = 1;
+  const start = (currentPage - 1) * ROWS_PER_PAGE;
+  const page = sorted.slice(start, start + ROWS_PER_PAGE);
+
+  document.getElementById('pageNum').textContent = currentPage;
+  document.getElementById('pageTotal').textContent = `of ${total}`;
+
+  const tbody = document.getElementById('tableBody');
+  tbody.innerHTML = '';
+  page.forEach((p, i) => {
+    const globalIdx = start + i;
+    const tr = document.createElement('tr');
+    if (selectedRow === globalIdx) tr.classList.add('selected-row');
+    tr.innerHTML = `
+      <td class="pn2">${p.name}</td>
+      <td>${p.date}</td>
+      <td><div class="uc">${p.units} <span class="${p.trend>0?'au':'ad'}">${p.trend>0?'↑':'↓'}</span></div></td>
+      <td class="uo">${p.order}</td>
+      <td><span class="badge badge-${p.status}">${p.status==='ok'?'In Stock':p.status==='low'?'Low Stock':'Critical'}</span></td>`;
+    tr.addEventListener('click', () => {
+      selectedRow = (selectedRow === globalIdx) ? null : globalIdx;
+      renderTable();
+    });
+    tbody.appendChild(tr);
+  });
+}
+
+// sort headers
+document.querySelectorAll('thead th').forEach(th => {
+  th.addEventListener('click', () => {
+    const col = th.dataset.col;
+    if (sortCol === col) sortDir *= -1; else { sortCol = col; sortDir = 1; }
+    document.querySelectorAll('thead th').forEach(t => {
+      t.classList.remove('sorted');
+      const arr = t.querySelector('.sort-arrow');
+      if (arr) arr.textContent = '↕';
+    });
+    th.classList.add('sorted');
+    const arr = th.querySelector('.sort-arrow');
+    if (arr) arr.textContent = sortDir === 1 ? '↑' : '↓';
+    currentPage = 1;
+    renderTable();
+  });
+});
+
+document.getElementById('prevPage').addEventListener('click', () => {
+  const total = Math.ceil(getSorted(tableData).length / ROWS_PER_PAGE);
+  currentPage = currentPage > 1 ? currentPage - 1 : total;
+  renderTable();
+});
+document.getElementById('nextPage').addEventListener('click', () => {
+  const total = Math.ceil(getSorted(tableData).length / ROWS_PER_PAGE);
+  currentPage = currentPage < total ? currentPage + 1 : 1;
+  renderTable();
+});
+
+// ── INIT ──────────────────────────────────────────────────────
+buildChart();
+renderTable();
+</script>
 </body>
 </html>
