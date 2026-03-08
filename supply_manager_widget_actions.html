@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Parts Journey</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --accent: #FF6840;
+    --al:     #FFD5C8;
+    --bg:     #FFF0EC;
+    --white:  #FFFFFF;
+    --td:     #1A1A1A;
+    --tm:     #666;
+    --tl:     #AAA;
+    --border: #FFD5C8;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    width: 396px;
+    height: 670px;
+    overflow: hidden;
+    background: transparent;
+    font-family: 'DM Sans', sans-serif;
+    color: var(--td);
+  }
+
+  .shell {
+    width: 396px;
+    height: 670px;
+    display: flex;
+    flex-direction: column;
+    background: var(--bg);
+  }
+
+  /* HEADER */
+  header {
+    flex: 0 0 48px;
+    background: var(--accent);
+    padding: 0 18px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  header h1 { color: #fff; font-size: 14px; font-weight: 700; }
+  .hdr-meta { color: rgba(255,255,255,.8); font-size: 11px; }
+
+  /* TABS */
+  .tabs {
+    flex: 0 0 40px;
+    background: var(--white);
+    border-bottom: 1.5px solid var(--border);
+    display: flex;
+    align-items: flex-end;
+    padding: 0 16px;
+    gap: 4px;
+  }
+  .tab {
+    padding: 8px 14px 9px;
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--tl);
+    cursor: pointer;
+    border-bottom: 2.5px solid transparent;
+    transition: color .15s, border-color .15s;
+    white-space: nowrap;
+    user-select: none;
+    position: relative;
+  }
+  .tab:hover { color: var(--tm); }
+  .tab.active { color: var(--accent); border-bottom-color: var(--accent); font-weight: 600; }
+  .tab .dot {
+    display: inline-block;
+    width: 6px; height: 6px;
+    background: var(--accent);
+    border-radius: 50%;
+    position: absolute;
+    top: 7px; right: 6px;
+  }
+
+  /* FILTER BAR */
+  .filterbar {
+    flex: 0 0 38px;
+    display: flex;
+    align-items: center;
+    padding: 0 16px;
+    gap: 8px;
+    background: var(--bg);
+  }
+  .fsel {
+    appearance: none;
+    background: var(--white);
+    border: 1.5px solid var(--border);
+    border-radius: 7px;
+    padding: 4px 22px 4px 9px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 10.5px;
+    color: var(--tm);
+    outline: none;
+    cursor: pointer;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='9' height='9' viewBox='0 0 9 9'%3E%3Cpath fill='%23FF6840' d='M4.5 6.5L0 2h9z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 7px center;
+    flex: 1;
+    transition: border-color .15s;
+  }
+  .fsel:focus { border-color: var(--accent); }
+
+  .count-chip {
+    font-size: 10px;
+    color: var(--tl);
+    white-space: nowrap;
+    margin-left: auto;
+    font-family: 'DM Mono', monospace;
+  }
+  .count-chip span { color: var(--accent); font-weight: 600; }
+
+  /* LIST */
+  .list {
+    flex: 1 1 0;
+    overflow-y: auto;
+    padding: 10px 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .list::-webkit-scrollbar { width: 3px; }
+  .list::-webkit-scrollbar-thumb { background: var(--al); border-radius: 3px; }
+
+  /* PART CARD */
+  .part-card {
+    background: var(--white);
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 14px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    transition: box-shadow .15s, border-color .15s;
+    animation: rise .2s ease both;
+  }
+  @keyframes rise {
+    from { opacity:0; transform:translateY(5px); }
+    to   { opacity:1; transform:translateY(0); }
+  }
+  .part-card:hover { box-shadow: 0 3px 14px rgba(255,104,64,.1); border-color: var(--al); }
+  .part-card.selected { border-color: var(--accent); background: #FFF8F6; }
+
+  /* checkbox */
+  .part-card input[type=checkbox] {
+    width: 15px; height: 15px;
+    accent-color: var(--accent);
+    flex-shrink: 0;
+    cursor: pointer;
+  }
+
+  /* text block */
+  .part-text { flex: 1; min-width: 0; }
+  .part-id {
+    font-size: 12.5px;
+    font-weight: 700;
+    font-family: 'DM Mono', monospace;
+    color: var(--td);
+    line-height: 1;
+  }
+  .part-card.selected .part-id { color: var(--accent); }
+  .part-desc {
+    font-size: 10px;
+    color: var(--tl);
+    margin-top: 3px;
+    text-transform: uppercase;
+    letter-spacing: .04em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  /* status pill */
+  .pill {
+    font-size: 9.5px;
+    font-weight: 700;
+    letter-spacing: .03em;
+    padding: 4px 10px;
+    border-radius: 20px;
+    white-space: nowrap;
+    flex-shrink: 0;
+    cursor: pointer;
+    border: none;
+    font-family: 'DM Sans', sans-serif;
+    transition: opacity .15s, transform .1s;
+  }
+  .pill:hover { opacity:.8; transform: scale(.96); }
+  .pill.pending   { background: var(--accent); color: #fff; }
+  .pill.open      { background: #FFF3E0; color: #BF360C; border: 1.5px solid #FFCC80; }
+  .pill.confirmed { background: #E8F5E9; color: #1B5E20; border: 1.5px solid #A5D6A7; }
+  .pill.overdue   { background: #FFEBEE; color: #B71C1C; border: 1.5px solid #EF9A9A; }
+  .pill.draft     { background: var(--bg); color: var(--tm); border: 1.5px solid var(--border); }
+
+  /* EMPTY */
+  .empty {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    color: var(--tl);
+    font-size: 12px;
+  }
+  .empty-icon { font-size: 30px; opacity: .35; }
+
+  /* ACTION FOOTER */
+  .action-footer {
+    flex: 0 0 64px;
+    background: var(--white);
+    border-top: 1.5px solid var(--border);
+    display: flex;
+    align-items: center;
+    padding: 0 16px;
+    gap: 8px;
+  }
+
+  .sel-label {
+    font-size: 11px;
+    color: var(--tl);
+    white-space: nowrap;
+    min-width: 60px;
+  }
+  .sel-label strong { color: var(--accent); font-family: 'DM Mono', monospace; }
+
+  .spacer { flex: 1; }
+
+  .act-btn {
+    padding: 8px 14px;
+    border-radius: 8px;
+    font-size: 11px;
+    font-weight: 600;
+    font-family: 'DM Sans', sans-serif;
+    cursor: pointer;
+    border: 1.5px solid var(--border);
+    background: transparent;
+    color: var(--tm);
+    transition: all .15s;
+  }
+  .act-btn:hover:not(:disabled) { border-color: var(--accent); color: var(--accent); }
+  .act-btn:disabled { opacity: .3; cursor: default; }
+
+  .act-btn.primary {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+  }
+  .act-btn.primary:hover:not(:disabled) { opacity: .87; }
+
+  /* toast */
+  .toast {
+    position: fixed;
+    bottom: 72px;
+    left: 50%;
+    transform: translateX(-50%) translateY(8px);
+    background: var(--td);
+    color: #fff;
+    font-size: 11px;
+    padding: 7px 16px;
+    border-radius: 20px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .2s, transform .2s;
+    white-space: nowrap;
+    z-index: 99;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  /* status popup */
+  .popup {
+    position: fixed;
+    background: var(--white);
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    box-shadow: 0 8px 24px rgba(255,104,64,.14);
+    padding: 5px 0;
+    z-index: 200;
+    display: none;
+    min-width: 190px;
+    animation: fadein .12s;
+  }
+  @keyframes fadein { from{opacity:0;transform:translateY(-3px)} to{opacity:1;transform:translateY(0)} }
+  .popup-opt {
+    padding: 9px 14px;
+    font-size: 11px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    transition: background .1s;
+    color: var(--td);
+  }
+  .popup-opt:hover { background: var(--bg); }
+  .pdot { width:8px; height:8px; border-radius:50%; flex-shrink:0; }
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <!-- HEADER -->
+  <header>
+    <h1>Parts Journey</h1>
+    <span class="hdr-meta" id="hdrMeta">482 parts total</span>
+  </header>
+
+  <!-- TABS -->
+  <div class="tabs" id="tabBar">
+    <div class="tab active" data-tab="action">New Action<div class="dot"></div></div>
+    <div class="tab" data-tab="rfq">Open RFQs<div class="dot"></div></div>
+    <div class="tab" data-tab="po">PO / SA</div>
+    <div class="tab" data-tab="done">Confirmed</div>
+  </div>
+
+  <!-- FILTER BAR -->
+  <div class="filterbar">
+    <select class="fsel" id="filterProgram">
+      <option value="">All programs</option>
+      <option value="recovery">Recovery Kit</option>
+      <option value="suspension">Suspension</option>
+      <option value="drivetrain">Drivetrain</option>
+      <option value="electrical">Electrical</option>
+      <option value="bodywork">Bodywork</option>
+    </select>
+    <span class="count-chip"><span id="visCount">0</span> shown</span>
+  </div>
+
+  <!-- LIST -->
+  <div class="list" id="list"></div>
+
+  <!-- FOOTER -->
+  <div class="action-footer">
+    <span class="sel-label"><strong id="selN">0</strong> selected</span>
+    <div class="spacer"></div>
+    <button class="act-btn" id="btnDeselect" disabled>Clear</button>
+    <button class="act-btn" id="btnSubmit" disabled>Submit RFQ</button>
+    <button class="act-btn primary" id="btnConfirm" disabled>Confirm →</button>
+  </div>
+</div>
+
+<!-- STATUS POPUP -->
+<div class="popup" id="popup">
+  <div class="popup-opt" data-s="pending"><div class="pdot" style="background:#FF6840"></div>Pending RFQ</div>
+  <div class="popup-opt" data-s="open"><div class="pdot" style="background:#E65100"></div>Open RFQ</div>
+  <div class="popup-opt" data-s="confirmed"><div class="pdot" style="background:#2E7D32"></div>Confirmed</div>
+  <div class="popup-opt" data-s="overdue"><div class="pdot" style="background:#B71C1C"></div>Overdue</div>
+  <div class="popup-opt" data-s="draft"><div class="pdot" style="background:#AAA"></div>Draft</div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+const PARTS = [
+  { id:'PT3458824-A', desc:'Off Road Recovery Kit',    program:'recovery',   tab:'action', status:'pending' },
+  { id:'PT3458825-B', desc:'Suspension Lift Kit',      program:'suspension', tab:'action', status:'pending' },
+  { id:'PT3458826-C', desc:'Front Skid Plate',         program:'recovery',   tab:'action', status:'draft'   },
+  { id:'PT5500210-R', desc:'Fuel Tank Skid Plate',     program:'drivetrain', tab:'action', status:'pending' },
+  { id:'PT5500207-O', desc:'Brake Line Protector Set', program:'suspension', tab:'action', status:'draft'   },
+  { id:'PT3911002-D', desc:'Differential Lock Module', program:'drivetrain', tab:'rfq',    status:'open'    },
+  { id:'PT3911003-E', desc:'Snorkel Intake Assembly',  program:'recovery',   tab:'rfq',    status:'open'    },
+  { id:'PT4120010-F', desc:'ARB Air Compressor Kit',   program:'recovery',   tab:'rfq',    status:'open'    },
+  { id:'PT5500209-Q', desc:'Antenna Mount Bracket',    program:'electrical', tab:'rfq',    status:'overdue' },
+  { id:'PT4120011-G', desc:'Rear Bumper Reinforcement',program:'bodywork',   tab:'po',     status:'open'    },
+  { id:'PT5500201-I', desc:'Transfer Case Skid',       program:'drivetrain', tab:'po',     status:'open'    },
+  { id:'PT5500202-J', desc:'Roof Rack Crossbar Set',   program:'bodywork',   tab:'po',     status:'draft'   },
+  { id:'PT5500205-M', desc:'Rock Slider Rails',        program:'bodywork',   tab:'done',   status:'confirmed'},
+  { id:'PT5500206-N', desc:'Tow Hook Assembly',        program:'recovery',   tab:'done',   status:'confirmed'},
+  { id:'PT4120012-H', desc:'Winch Mount Bracket',      program:'recovery',   tab:'done',   status:'confirmed'},
+];
+
+const PILL_LABEL = { pending:'PENDING RFQ', open:'OPEN RFQ', confirmed:'CONFIRMED', overdue:'OVERDUE', draft:'DRAFT' };
+
+let activeTab = 'action';
+let filterProg = '';
+let selected = new Set();
+let popupTargetId = null;
+
+function visible() {
+  return PARTS.filter(p => p.tab === activeTab && (!filterProg || p.program === filterProg));
+}
+
+function render() {
+  const list = document.getElementById('list');
+  const items = visible();
+  document.getElementById('visCount').textContent = items.length;
+
+  if (items.length === 0) {
+    list.innerHTML = `<div class="empty"><div class="empty-icon">📦</div><span>Nothing here yet</span></div>`;
+    updateFooter(); return;
+  }
+
+  list.innerHTML = '';
+  items.forEach((p, i) => {
+    const isSel = selected.has(p.id);
+    const card = document.createElement('div');
+    card.className = 'part-card' + (isSel ? ' selected' : '');
+    card.style.animationDelay = (i * 25) + 'ms';
+
+    card.innerHTML = `
+      <input type="checkbox" ${isSel ? 'checked' : ''} data-id="${p.id}">
+      <div class="part-text">
+        <div class="part-id">${p.id}</div>
+        <div class="part-desc">${p.desc}</div>
+      </div>
+      <button class="pill ${p.status}" data-id="${p.id}">${PILL_LABEL[p.status]}</button>`;
+
+    card.querySelector('input').addEventListener('change', e => {
+      e.stopPropagation();
+      toggle(p.id, e.target.checked);
+    });
+    card.addEventListener('click', e => {
+      if (e.target.closest('input, button')) return;
+      toggle(p.id, !selected.has(p.id));
+    });
+    card.querySelector('.pill').addEventListener('click', e => {
+      e.stopPropagation();
+      openPopup(p.id, e.currentTarget);
+    });
+
+    list.appendChild(card);
+  });
+  updateFooter();
+}
+
+function toggle(id, val) {
+  val ? selected.add(id) : selected.delete(id);
+  render();
+}
+
+function updateFooter() {
+  const n = selected.size;
+  document.getElementById('selN').textContent = n;
+  ['btnDeselect','btnSubmit','btnConfirm'].forEach(id => {
+    document.getElementById(id).disabled = n === 0;
+  });
+  // relabel submit based on tab
+  document.getElementById('btnSubmit').textContent =
+    activeTab === 'rfq' ? 'Send PO' :
+    activeTab === 'po'  ? 'Approve SA' : 'Submit RFQ';
+}
+
+// tabs
+document.getElementById('tabBar').querySelectorAll('.tab').forEach(t => {
+  t.addEventListener('click', () => {
+    document.querySelectorAll('.tab').forEach(x => x.classList.remove('active'));
+    t.classList.add('active');
+    activeTab = t.dataset.tab;
+    selected.clear();
+    render();
+  });
+});
+
+// filter
+document.getElementById('filterProgram').addEventListener('change', e => {
+  filterProg = e.target.value;
+  selected.clear();
+  render();
+});
+
+// popup
+const popup = document.getElementById('popup');
+function openPopup(id, btn) {
+  popupTargetId = id;
+  const r = btn.getBoundingClientRect();
+  popup.style.top  = (r.bottom + 4) + 'px';
+  popup.style.left = Math.min(r.left, 220) + 'px';
+  popup.style.display = 'block';
+}
+popup.querySelectorAll('.popup-opt').forEach(opt => {
+  opt.addEventListener('click', () => {
+    const p = PARTS.find(x => x.id === popupTargetId);
+    if (p) p.status = opt.dataset.s;
+    popup.style.display = 'none';
+    render();
+  });
+});
+document.addEventListener('click', e => {
+  if (!e.target.closest('.pill') && !e.target.closest('#popup')) popup.style.display = 'none';
+});
+
+// toast helper
+function toast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2200);
+}
+
+// footer actions
+document.getElementById('btnDeselect').addEventListener('click', () => {
+  selected.clear(); render();
+});
+document.getElementById('btnSubmit').addEventListener('click', () => {
+  const label = document.getElementById('btnSubmit').textContent;
+  const ids = [...selected].join(', ');
+  selected.forEach(id => {
+    const p = PARTS.find(x => x.id === id);
+    if (p) {
+      if (p.status === 'pending') p.status = 'open';
+      else if (p.status === 'open') p.status = 'confirmed';
+    }
+  });
+  toast(`${label} sent for ${selected.size} part${selected.size>1?'s':''}`);
+  selected.clear();
+  render();
+});
+document.getElementById('btnConfirm').addEventListener('click', () => {
+  selected.forEach(id => {
+    const p = PARTS.find(x => x.id === id);
+    if (p) { p.status = 'confirmed'; p.tab = 'done'; }
+  });
+  toast(`${selected.size} part${selected.size>1?'s':''} confirmed ✓`);
+  selected.clear();
+  render();
+});
+
+render();
+</script>
+</body>
+</html>
